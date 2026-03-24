@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIS Extra Credit – Chapter 3: Platforms and Network Effects</title>
+  <style>
+    :root {
+      --bg: #f2ecfb;
+      --card: rgba(255,255,255,0.88);
+      --text: #231a35;
+      --muted: #645a78;
+      --line: rgba(98, 62, 163, 0.14);
+      --primary: #6b46c1;
+      --primary-dark: #4b2d8e;
+      --accent: #d8c7ff;
+      --shadow: 0 18px 40px rgba(50, 28, 95, 0.10);
+      --radius: 22px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(216, 199, 255, 0.88), transparent 30%),
+        radial-gradient(circle at top right, rgba(107, 70, 193, 0.10), transparent 25%),
+        linear-gradient(180deg, #fbf9ff 0%, var(--bg) 50%, #ebe2fb 100%);
+      line-height: 1.65;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      background: rgba(251, 249, 255, 0.84);
+      border-bottom: 1px solid rgba(107, 70, 193, 0.10);
+    }
+
+    .topbar-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), #9a79e5);
+      color: white;
+      box-shadow: 0 10px 24px rgba(107, 70, 193, 0.24);
+      font-size: 0.95rem;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(107, 70, 193, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      padding: 56px 0 28px;
+    }
+
+    .hero-wrap {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .side-card,
+    .section-card,
+    .quiz-card,
+    .source-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-card {
+      padding: 34px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -30px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(216, 199, 255, 0.95), rgba(216, 199, 255, 0));
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(107, 70, 193, 0.10);
+      color: var(--primary-dark);
+      font-size: 0.84rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 760px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 16px 0 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 800;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #9a79e5);
+      color: white;
+      box-shadow: 0 10px 24px rgba(107, 70, 193, 0.22);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.78);
+      color: var(--primary-dark);
+      border: 1px solid var(--line);
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .side-card {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .mini-stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,244,255,0.78));
+      border: 1px solid var(--line);
+    }
+
+    .mini-stat .label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .mini-stat .value {
+      margin-top: 6px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    main {
+      padding: 8px 0 56px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .section-card,
+    .quiz-card,
+    .source-card {
+      padding: 28px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.55rem;
+      letter-spacing: -0.02em;
+      color: var(--primary-dark);
+    }
+
+    .section-intro {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .overview-grid,
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .overview-item,
+    .term {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(248,244,255,0.82));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .term::before,
+    .overview-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), #b49af0);
+    }
+
+    .overview-item strong,
+    .term strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: 1.04rem;
+      margin-bottom: 8px;
+    }
+
+    .highlight {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(107, 70, 193, 0.11), rgba(216, 199, 255, 0.35));
+      border: 1px solid rgba(107, 70, 193, 0.16);
+      font-weight: 700;
+    }
+
+    .quiz-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .quiz-question {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,241,255,0.78));
+    }
+
+    .quiz-question .scenario {
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .quiz-question strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: 1.02rem;
+    }
+
+    .quiz-question ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .quiz-question li { margin-bottom: 6px; }
+
+    .answer {
+      margin-top: 12px;
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(20, 106, 63, 0.10);
+      color: #176540;
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    .explanation {
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    .source-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .source-list li { margin-bottom: 8px; }
+
+    @media (max-width: 900px) {
+      .hero-wrap,
+      .overview-grid,
+      .term-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-card,
+      .section-card,
+      .quiz-card,
+      .source-card,
+      .side-card {
+        padding: 22px;
+      }
+
+      .nav-links a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">MIS</div>
+        <div>Chapter 3 Study Guide</div>
+      </div>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#vocabulary">Vocabulary</a>
+        <a href="#connections">Why It Matters</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#sources">Sources</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="container hero-wrap">
+      <div class="hero-card">
+        <div class="eyebrow">Chapter 3 • Platforms and Network Effects</div>
+        <h1>Understand how platforms grow, why dominant standards are hard to beat, and how network effects can reshape an industry.</h1>
+        <p>
+          This chapter focuses on network effects, Metcalfe’s Law, software ecosystems, one-sided and two-sided markets,
+          platform strategy, barriers to entry in network markets, and the ways firms like Microsoft, Roblox, and Zoom grew.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#vocabulary">Review Concepts</a>
+          <a class="btn btn-secondary" href="#quiz">Take Practice Quiz</a>
+        </div>
+      </div>
+
+      <aside class="side-card">
+        <div class="mini-stat">
+          <div class="label">Main Idea</div>
+          <div class="value">Products have features, platforms have communities</div>
+        </div>
+        <div class="mini-stat">
+          <div class="label">Big Risk</div>
+          <div class="value">Winner-take-all markets</div>
+        </div>
+        <div class="mini-stat">
+          <div class="label">Best Reminder</div>
+          <div class="value">A better product alone may not be enough</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main>
+    <div class="container grid">
+      <section class="section-card" id="overview">
+        <h2>Chapter Overview</h2>
+        <p class="section-intro">
+          Chapter 3 explains why some digital markets become dominated by a few major players. The slides show how network effects,
+          complementary products, switching costs, and platform communities can create powerful advantages and raise barriers to entry. fileciteturn2file0
+        </p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <strong>Network Effects</strong>
+            A product or service becomes more valuable as more people use it, which can accelerate growth and make leaders stronger. fileciteturn2file0
+          </div>
+          <div class="overview-item">
+            <strong>Platforms</strong>
+            Platforms let others build or integrate complementary goods, so value comes from the surrounding community, not just the core product. fileciteturn2file0
+          </div>
+          <div class="overview-item">
+            <strong>Market Structure</strong>
+            Strong network effects can create winner-take-all environments with a dominant standard and, at the extreme, a monopoly. fileciteturn2file0
+          </div>
+          <div class="overview-item">
+            <strong>Growth Strategies</strong>
+            Firms can move early, subsidize adoption, use viral promotion, encourage complements, form alliances, and maintain backward compatibility. fileciteturn2file0
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" id="vocabulary">
+        <h2>Vocabulary and Key Concepts</h2>
+        <p class="section-intro">These are the Chapter 3 ideas most likely to show up in scenario-based questions.</p>
+
+        <div class="term-grid">
+          <div class="term">
+            <strong>Network Effects</strong>
+            Network effects exist when the value of a product or service increases as the number of users increases. Social media and marketplaces are common examples. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Metcalfe’s Law</strong>
+            A concept linked to network effects stating that the value of a network is proportional to the number of users squared. The main idea is that larger networks can become dramatically more valuable. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Platform</strong>
+            A product or service that allows the development and integration of software products and other complementary goods. Platforms create communities around them instead of offering only standalone features. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Complementary Goods</strong>
+            Products or services that add value to a platform, such as apps, games, accessories, or developer tools that make the core platform more useful.
+          </div>
+          <div class="term">
+            <strong>Software Ecosystem</strong>
+            A layered environment of related technologies and applications, such as hardware, operating system, database management system, middleware, enterprise applications, and consumer applications. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Middleware</strong>
+            Technology that connects or sits between other software layers. In the slides, web browsers are treated as middleware because they help connect users to applications and services across systems. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>One-Sided Market</strong>
+            A market that derives most of its value from a single class of users. Messaging is the example used in the slides. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Two-Sided Market</strong>
+            A market made up of two distinct groups of participants, where both sides must receive value for the network to function. Video games and app platforms are common examples. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Same-Side Exchange Benefits</strong>
+            Benefits created by interaction among members of the same user group, such as more friends making a messaging app more useful. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Cross-Side Exchange Benefits</strong>
+            Benefits created when growth on one side of a market increases value for the other side, such as more gamers attracting more developers. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Bundling</strong>
+            Combining products together, sometimes at a discount or as a built-in feature, to increase value and capture more revenue. The slides use Microsoft as a major example. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Backward Compatibility</strong>
+            The ability to take advantage of complementary products developed for an earlier generation of technology. This helps lower resistance to adoption. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Convergence</strong>
+            When two or more markets that were once separate begin to offer the same features and capabilities. The slides use the iPhone as an example. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Envelopment</strong>
+            When one market tries to conquer another market by making it a subset, component, or feature of its main offering. fileciteturn2file0
+          </div>
+          <div class="term">
+            <strong>Freemium</strong>
+            A product strategy in which a free version is offered, sometimes with limited features or limited time, so customers can try the product and hopefully convert to paying users later. The Zoom slides define this directly. fileciteturn2file0
+          </div>
+        </div>
+
+        <div class="highlight">
+          Quick exam shortcut: in network markets, the dominant platform often benefits from users, complements, and switching costs all at once, so a new entrant usually needs more than just a slightly better product. fileciteturn2file0
+        </div>
+      </section>
+
+      <section class="section-card" id="connections">
+        <h2>Why These Ideas Matter</h2>
+        <p>
+          This chapter matters because many of the biggest digital businesses are not just selling a product once. They are building a platform, growing a network, attracting complementary goods, and making it harder for users to leave. That is why software, app stores, operating systems, marketplaces, and meeting tools can scale so fast and become so profitable. fileciteturn2file0
+        </p>
+        <p>
+          It also explains why strong incumbents can still be challenged. The Zoom slides show that a dominant player can be beaten if the new product is much easier to use, solves real complaints, spreads virally, and reduces barriers to trial through freemium pricing and simple setup. fileciteturn2file0
+        </p>
+      </section>
+
+      <section class="quiz-card" id="quiz">
+        <h2>Chapter 3 Practice Quiz</h2>
+        <div class="quiz-list">
+          <div class="quiz-question">
+            <div class="scenario">A new campus event app lets students create club pages, invite friends, and share event reminders. At first, students do not care much about the app because only a few organizations use it. After more clubs join, however, the app becomes much more useful because students can find more events and communicate with more people in one place.</div>
+            <strong>1. Which concept BEST explains why the app became more valuable as more clubs and students joined?</strong>
+            <ul>
+              <li>A. Bundling</li>
+              <li>B. Network effects</li>
+              <li>C. Capital intensity</li>
+              <li>D. Vertical integration</li>
+            </ul>
+            <div class="answer">Correct Answer: B</div>
+            <div class="explanation">Explanation: The app’s value rises as more users participate, which is the core idea of network effects. Bundling means combining products together, which is not what drives the value here. Capital intensity refers to large startup cost requirements, and vertical integration is about owning more stages of a supply chain. The scenario is directly about growing usefulness from a larger network. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">A startup releases a new gaming console with slightly better graphics than the market leader. Even so, many players stay with the older console because their friends already use it, they already own many compatible games, and developers keep releasing new titles for the dominant system. The new console struggles to attract enough buyers to gain momentum.</div>
+            <strong>2. What is the BEST explanation for why the startup’s console is having trouble winning users?</strong>
+            <ul>
+              <li>A. The market has weak same-side benefits</li>
+              <li>B. The market has low switching costs</li>
+              <li>C. The market has strong network-based barriers to entry</li>
+              <li>D. The market has limited economies of scale</li>
+            </ul>
+            <div class="answer">Correct Answer: C</div>
+            <div class="explanation">Explanation: The incumbent benefits from users, complementary games, and staying power, which together raise barriers to entry in a network market. Choice A is wrong because the problem is not weak network value but strong existing network value around the leader. Choice B is the opposite of the scenario, since users clearly face meaningful reasons to stay. Choice D may matter in manufacturing, but the main issue described is the power of the installed base and complements. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">A messaging app becomes popular because students can chat with all their friends in one place. The company does not need a second user group like drivers and riders or buyers and sellers for the product to work. The main value comes from people interacting with other people just like themselves on the same network.</div>
+            <strong>3. Which type of market is described in this scenario?</strong>
+            <ul>
+              <li>A. One-sided market</li>
+              <li>B. Two-sided market</li>
+              <li>C. Multi-channel market</li>
+              <li>D. Backward-compatible market</li>
+            </ul>
+            <div class="answer">Correct Answer: A</div>
+            <div class="explanation">Explanation: A one-sided market gets most of its value from a single class of users, and the slides use messaging as the example. A two-sided market requires two distinct groups that both need value, such as gamers and developers. Multi-channel market is not the concept taught here, and backward compatibility is a design choice, not a market type. The scenario is a direct fit for one-sided network value. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">An app store needs both app developers and phone users. Developers only want to spend time building apps if enough users exist, and users only want to buy the phones if enough useful apps are available. As each side grows, the other side sees more reason to join.</div>
+            <strong>4. Which idea BEST explains this pattern of value creation?</strong>
+            <ul>
+              <li>A. Same-side exchange benefits</li>
+              <li>B. Cross-side exchange benefits</li>
+              <li>C. Bundling discounts</li>
+              <li>D. Channel dominance</li>
+            </ul>
+            <div class="answer">Correct Answer: B</div>
+            <div class="explanation">Explanation: The growth of one side of the market makes the other side more valuable, which is the definition of cross-side exchange benefits. Same-side benefits happen within one class of participants, not across two different groups. Bundling is about packaging products together, and channel dominance refers more to control over distribution paths. This scenario is the classic two-sided market logic from the slides. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">A large software company combines two separate programs into one package and charges a lower total price than customers would pay if they bought the products separately. The company also includes a basic browser for free with its operating system, making rival standalone browser products less attractive. Managers say this approach helps the firm capture more value from customers with different preferences.</div>
+            <strong>5. Which concept BEST matches this strategy?</strong>
+            <ul>
+              <li>A. Convergence</li>
+              <li>B. Bundling</li>
+              <li>C. Envelopment</li>
+              <li>D. Backward compatibility</li>
+            </ul>
+            <div class="answer">Correct Answer: B</div>
+            <div class="explanation">Explanation: The company is packaging related offerings together to capture more revenue and reduce the appeal of separate rivals, which is bundling. Convergence is when once-separate markets begin to offer similar capabilities. Envelopment is broader and involves one market taking over another by making it a feature, while the clearest idea here is the bundle itself. Backward compatibility is about working with older complementary products, not combining items into one offer. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">A new operating system is released, but the company makes sure older apps and accessories still work with it. Users feel safer upgrading because they do not lose access to tools they already know and own. The company hopes this reduces resistance and helps the new version spread faster.</div>
+            <strong>6. Which action is the company MOST clearly taking?</strong>
+            <ul>
+              <li>A. Encouraging same-side exchange benefits</li>
+              <li>B. Maintaining backward compatibility</li>
+              <li>C. Increasing capital intensity</li>
+              <li>D. Creating a two-sided market</li>
+            </ul>
+            <div class="answer">Correct Answer: B</div>
+            <div class="explanation">Explanation: Letting older complementary products continue to work with a new generation is the definition of backward compatibility. Same-side exchange benefits involve more value from interactions within one user group, which is not the focus here. Capital intensity concerns startup cost, and creating a two-sided market would require two distinct participant groups. The scenario is about making adoption easier by preserving old complements. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">A video meeting company enters a market with established competitors. Instead of asking users to pay first, it offers a free version that is easy to join with minimal setup. Students start using it for clubs, families use it for calls, and some businesses later upgrade to paid plans after getting comfortable with the product.</div>
+            <strong>7. Which growth strategy is MOST clearly being used?</strong>
+            <ul>
+              <li>A. Freemium to subsidize adoption</li>
+              <li>B. Channel dominance through OEMs</li>
+              <li>C. Backward compatibility through legacy hardware</li>
+              <li>D. Convergence through bundled devices</li>
+            </ul>
+            <div class="answer">Correct Answer: A</div>
+            <div class="explanation">Explanation: The company lowers trial barriers by offering a free version, which fits the freemium idea and helps subsidize adoption. OEM channel dominance refers to distribution through hardware makers, which is not part of the story. Backward compatibility is about old complements still working, and convergence is about previously separate markets blending together. The scenario closely matches the Zoom example in the slides. fileciteturn2file0</div>
+          </div>
+
+          <div class="quiz-question">
+            <div class="scenario">A digital platform lets users create their own mini-games and sell virtual items to other users. As more creators join, players find more things to do, and as more players join, creators have more reason to build. The company is not just selling one game; it is supporting a larger community that creates and exchanges value.</div>
+            <strong>8. Why is this business BEST described as a platform rather than just a product?</strong>
+            <ul>
+              <li>A. It mainly earns value from physical inventory and shipping speed</li>
+              <li>B. It supports development and integration of complementary goods by a community</li>
+              <li>C. It avoids all network effects by controlling every feature itself</li>
+              <li>D. It focuses only on one-time sales without continued interaction</li>
+            </ul>
+            <div class="answer">Correct Answer: B</div>
+            <div class="explanation">Explanation: The business is a platform because it allows others to create complementary content and increases value through a community. Choice A describes a traditional product business with logistics emphasis, not a platform ecosystem. Choice C is wrong because the scenario depends heavily on network effects. Choice D is the opposite of the ongoing participation and exchange described in the scenario. fileciteturn2file0</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="source-card" id="sources">
+        <h2>Sources</h2>
+        <ul class="source-list">
+          <li>Course slides: <em>Platforms and Network Effects</em>. fileciteturn2file0</li>
+          <li>Slides covering Metcalfe’s Law, one-sided vs. two-sided markets, platform strategy, and Zoom’s growth example. fileciteturn2file0</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
